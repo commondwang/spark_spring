@@ -1,0 +1,72 @@
+package com.commondwang.sparksample.util;
+
+import org.apache.commons.codec.binary.Base64;
+
+public class UUID {
+
+	public static String random() {
+		byte[] data = UUID.toByteArray(java.util.UUID.randomUUID());
+		String s = Base64.encodeBase64URLSafeString(data);
+		return s.split("=")[0];
+	}
+	
+	public static String randomConfID() {
+		byte[] data = UUID.toByteArray(java.util.UUID.randomUUID());
+		return Base64.encodeBase64String(data);
+	}
+
+	public static byte[] toByteArray(java.util.UUID uuid) {
+		long msb = uuid.getMostSignificantBits();
+		long lsb = uuid.getLeastSignificantBits();
+		byte[] buffer = new byte[16];
+
+		for (int i = 0; i < 8; i++) {
+			buffer[i] = (byte) (msb >>> 8 * (7 - i));
+		}
+		for (int i = 8; i < 16; i++) {
+			buffer[i] = (byte) (lsb >>> 8 * (7 - i));
+		}
+		return buffer;
+	}
+
+	public static java.util.UUID toUUID(byte[] data) {
+		long msb = 0;
+		long lsb = 0;
+		assert data.length == 16;
+		for (int i = 0; i < 8; i++)
+			msb = (msb << 8) | (data[i] & 0xff);
+		for (int i = 8; i < 16; i++)
+			lsb = (lsb << 8) | (data[i] & 0xff);
+		java.util.UUID result = new java.util.UUID(msb, lsb);
+		return result;
+	}
+	
+	public static String toStandardUUID(String base64UUID) {
+		byte[] data = Base64.decodeBase64(base64UUID);
+		// upper case uuid to be consistent with MMR
+		return toUUID(data).toString().toUpperCase();
+	}
+	
+	public static String fromStandardUUID(String standardUUID) {
+		byte[] data = toByteArray(java.util.UUID.fromString(standardUUID));
+		return Base64.encodeBase64String(data);
+	}
+
+	public static void main(String[] args) {
+		java.util.UUID uuid = java.util.UUID.randomUUID();
+		System.out.println("UUID: " + uuid);
+		System.out.println("UUID value: " + uuid.getMostSignificantBits() + ", " + uuid.getLeastSignificantBits());
+		byte[] bytes = toByteArray(uuid);
+		System.out.println("Byte Array: ");
+		for (byte b : bytes) {
+			System.out.print(Integer.toHexString(b) + " ");
+		}
+		System.out.println();
+		System.out.println("Test 1: " + UUID.random());
+		System.out.println("Test 2: " + UUID.randomConfID());
+		System.out.println("Test 3: " + UUID.randomConfID());
+		System.out.println("Standard UUID: " + UUID.toStandardUUID("Vk/XRgegTMyEGgWNLJoFYg=="));
+		System.out.println("ConfID: " + UUID.fromStandardUUID("B8E2844F-F162-4808-A997-F267BCE8B0BB"));
+		System.out.println("ConfID: " + UUID.fromStandardUUID("05FEAB50-301F-424D-A2FF-6C84C9DDFFCB"));
+	}
+}
