@@ -51,22 +51,4 @@ public class UUID {
 		byte[] data = toByteArray(java.util.UUID.fromString(standardUUID));
 		return Base64.encodeBase64String(data);
 	}
-
-	public static void main(String[] args) {
-		java.util.UUID uuid = java.util.UUID.randomUUID();
-		System.out.println("UUID: " + uuid);
-		System.out.println("UUID value: " + uuid.getMostSignificantBits() + ", " + uuid.getLeastSignificantBits());
-		byte[] bytes = toByteArray(uuid);
-		System.out.println("Byte Array: ");
-		for (byte b : bytes) {
-			System.out.print(Integer.toHexString(b) + " ");
-		}
-		System.out.println();
-		System.out.println("Test 1: " + UUID.random());
-		System.out.println("Test 2: " + UUID.randomConfID());
-		System.out.println("Test 3: " + UUID.randomConfID());
-		System.out.println("Standard UUID: " + UUID.toStandardUUID("Vk/XRgegTMyEGgWNLJoFYg=="));
-		System.out.println("ConfID: " + UUID.fromStandardUUID("B8E2844F-F162-4808-A997-F267BCE8B0BB"));
-		System.out.println("ConfID: " + UUID.fromStandardUUID("05FEAB50-301F-424D-A2FF-6C84C9DDFFCB"));
-	}
 }
